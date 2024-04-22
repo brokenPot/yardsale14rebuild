@@ -1,13 +1,14 @@
 "use server";
 import bcrypt from "bcrypt";
-import db from "@/lib/db";
+// import db from "@/lib/db";
 import { z } from "zod";
 
 
 import sessionSave from "@/lib/sessionSave";
+import client from "@/lib/client";
 
 const checkEmailExists = async (email: string) => {
-    const user = await db.user.findUnique({
+    const user = await client!.user.findUnique({
         where: {
             email,
         },
@@ -43,7 +44,7 @@ export async function logIn(prevState: any, formData: FormData) {
     if (!result.success) {
         return result.error.flatten();
     } else {
-        const user = await db.user.findUnique({
+        const user = await client!.user.findUnique({
             where: {
                 email: result.data.email,
             },

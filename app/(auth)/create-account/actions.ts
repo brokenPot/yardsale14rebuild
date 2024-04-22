@@ -3,12 +3,13 @@ import bcrypt from "bcrypt";
 import {
     PASSWORD_MIN_LENGTH,
 } from "@/lib/constants";
-import db from "@/lib/db";
+// import db from "@/lib/db";
 import { z } from "zod";
 import { getIronSession } from "iron-session";
 import { cookies } from "next/headers";
 
 import sessionSave from "@/lib/sessionSave";
+import client from "@/lib/client";
 
 const checkUsername = (name: string) => !name.includes("potato");
 
@@ -36,7 +37,7 @@ const formSchema = z
         confirm_password: z.string().min(PASSWORD_MIN_LENGTH),
     })
     .superRefine(async ({ name }, ctx) => {
-        const user = await db.user.findUnique({
+        const user = await client!.user.findUnique({
             where: {
                 name,
             },
@@ -55,7 +56,7 @@ const formSchema = z
         }
     })
     .superRefine(async ({ email }, ctx) => {
-        const user = await db.user.findUnique({
+        const user = await client!.user.findUnique({
             where: {
                 email,
             },
@@ -89,7 +90,7 @@ export async function createAccount(prevState: any, formData: FormData) {
         return result.error.flatten();
     } else {
         const hashedPassword = await bcrypt.hash(result.data.password, 12);
-        const user = await db.user.create({
+        const user = await client!.user.create({
             data: {
                 name: result.data.name,
                 email: result.data.email,

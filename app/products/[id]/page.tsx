@@ -1,10 +1,11 @@
-import db from "@/lib/db";
+// import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { formatToWon } from "@/lib/utils";
 import { UserIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import client from "@/lib/client";
 
 async function getIsOwner(userId: number) {
     const session = await getSession();
@@ -15,7 +16,7 @@ async function getIsOwner(userId: number) {
 }
 
 async function getProduct(id: number) {
-    const product = await db.product.findUnique({
+    const product = await client!.product.findUnique({
         where: {
             id,
         },

@@ -1,7 +1,8 @@
-import db from "@/lib/db";
+// import db from "@/lib/db";
 import { NextRequest } from "next/server";
 import sessionSave from "@/lib/sessionSave";
 import {getAccessToken, getUserEmail, getUserProfile} from "@/app/(auth)/github/utils";
+import client from "@/lib/client";
 
 export async function GET(request: NextRequest) {
     const access_token = await getAccessToken(request)
@@ -11,7 +12,7 @@ export async function GET(request: NextRequest) {
         ({ primary, visibility }) => primary && visibility === "private"
     )?.email;
 
-    const user = await db.user.findUnique({
+    const user = await client!.user.findUnique({
         where: {
             github_id: id + "",
         },
@@ -22,7 +23,7 @@ export async function GET(request: NextRequest) {
     if (user) {
         await sessionSave(user.id);
     }
-    const newUser = await db.user.create({
+    const newUser = await client!.user.create({
         data: {
             name: `${login}${id && `-${id}`}${email && `-${email.split("@").at(0)}`}`,
             github_id: id + "",

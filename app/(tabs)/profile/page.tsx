@@ -1,12 +1,13 @@
-import db from "@/lib/db";
+// import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { notFound, redirect } from "next/navigation";
+import client from "@/lib/client";
 
 
 async function getUser() {
     const session = await getSession();
     if (session.id) {
-        const user = await db.user.findUnique({
+        const user = await client!.user.findUnique({
             where: {
                 id: session.id,
             },

@@ -1,8 +1,8 @@
 import ListProduct from "@/components/list-product";
-import db from "@/lib/db";
+import client from "@/lib/client";
 
 async function getProducts() {
-const products = await db.product.findMany({
+const products = await client!.product.findMany({
     select: {
         title: true,
         price: true,
